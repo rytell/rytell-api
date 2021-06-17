@@ -20,7 +20,8 @@ export const COMMUNITY_TREASURY_ADDRESS =
 
 // https://github.com/pangolindex/interface/blob/master/src/state/stake/hooks.ts
 export const STAKING_ADDRESSES = [
-  '0xC0687f076549A361f4114DBc93038774C2d248aE', // WAVAX-YAY at FUJI
+  '0xA050f6F3554cA23B6B934364FCAb54610855deb5', // WAVAX-YAY at FUJI
+  '0x6735b3B9f5807594d22EF2e10DAB010034982189', // WAVAX-FUJISTABLE
 ];
 
 export const ERC20_ABI = [

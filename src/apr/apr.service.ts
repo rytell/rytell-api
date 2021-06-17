@@ -22,7 +22,6 @@ export class AprService {
     const {
       data: { result },
     } = await this.call(STAKING_REWARDS_ABI, address, 'stakingToken', []);
-    console.log(result, 'example');
     return this.normalizeAddress(result);
   }
 

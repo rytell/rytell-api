@@ -47,8 +47,6 @@ export class AprController {
       await this.aprService.getBalance(YAY_ADDRESS, WAVAX_YAY_ADDRESS),
     ]);
 
-    console.log(pooledAVAX, pooledYAY);
-
     const stakedAVAX = [token0, token1].includes(WAVAX_ADDRESS)
       ? (await this.aprService.getBalance(WAVAX_ADDRESS, stakingTokenAddress))
           // Other side of pool has equal value
@@ -66,7 +64,7 @@ export class AprController {
           .mul(poolTokenBalance)
           .div(poolTokenSupply || 1);
 
-    if (stakedAVAX.toNumber() === 0) {
+    if (stakedAVAX.toString() === '0') {
       return stakedAVAX.toString();
     }
 
