@@ -13,6 +13,11 @@ import {
 @Injectable()
 export class AprService {
   constructor(private httpService: HttpService) {}
+  private chainId: number;
+
+  setChainId(chainId: number) {
+    this.chainId = chainId;
+  }
 
   normalizeAddress(address: string) {
     return hexZeroPad(hexStripZeros(address), 20);
@@ -34,7 +39,7 @@ export class AprService {
   }
 
   getPNGBalance(address: string) {
-    return this.getBalance(YAY_ADDRESS, address);
+    return this.getBalance(YAY_ADDRESS[this.chainId], address);
   }
 
   async getTotalSupply(address: string) {
@@ -74,7 +79,7 @@ export class AprService {
     const iface = new Interface(abi);
 
     return this.httpService
-      .post(RPC_URL, {
+      .post(RPC_URL[this.chainId], {
         id: 1,
         jsonrpc: '2.0',
         method: 'eth_call',

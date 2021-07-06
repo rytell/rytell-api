@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { Controller, Get, Param } from '@nestjs/common';
 
 import {
@@ -13,13 +12,15 @@ import { AprService } from './apr.service';
 export class AprController {
   constructor(private readonly aprService: AprService) {}
 
-  @Get(':address')
+  @Get(':address/:chainId')
   async getApr(@Param() params): Promise<string> {
-    const stakingAddress = params.address;
+    const { address: stakingAddress, chainId } = params;
 
-    if (!STAKING_ADDRESSES.includes(stakingAddress)) {
+    if (!STAKING_ADDRESSES[chainId].includes(stakingAddress)) {
       return;
     }
+
+    this.aprService.setChainId(chainId);
 
     const stakingTokenAddress = await this.aprService.getStakingTokenAddress(
       stakingAddress,
@@ -43,22 +44,38 @@ export class AprController {
 
     // Get how much AVAX and YAY are in the AVAX-YAY pool
     const [pooledAVAX, pooledYAY] = await Promise.all([
-      await this.aprService.getBalance(WAVAX_ADDRESS, WAVAX_YAY_ADDRESS),
-      await this.aprService.getBalance(YAY_ADDRESS, WAVAX_YAY_ADDRESS),
+      await this.aprService.getBalance(
+        WAVAX_ADDRESS[chainId],
+        WAVAX_YAY_ADDRESS[chainId],
+      ),
+      await this.aprService.getBalance(
+        YAY_ADDRESS[chainId],
+        WAVAX_YAY_ADDRESS[chainId],
+      ),
     ]);
 
     if (poolTokenSupply.toString() === '0' || pooledYAY.toString() === '0') {
       return '0';
     }
 
-    const stakedAVAX = [token0, token1].includes(WAVAX_ADDRESS)
-      ? (await this.aprService.getBalance(WAVAX_ADDRESS, stakingTokenAddress))
+    const stakedAVAX = [token0, token1].includes(WAVAX_ADDRESS[chainId])
+      ? (
+          await this.aprService.getBalance(
+            WAVAX_ADDRESS[chainId],
+            stakingTokenAddress,
+          )
+        )
           // Other side of pool has equal value
           .mul(2)
           // Not all xYAY is staked
           .mul(poolTokenBalance)
           .div(poolTokenSupply)
-      : (await this.aprService.getBalance(YAY_ADDRESS, stakingTokenAddress))
+      : (
+          await this.aprService.getBalance(
+            YAY_ADDRESS[chainId],
+            stakingTokenAddress,
+          )
+        )
           // Other side of pool has equal value
           .mul(2)
           // Convert to AVAX
@@ -82,7 +99,6 @@ export class AprController {
       .mul(100)
       // Divide by amount staked to get APR
       .div(stakedAVAX);
-
     return rewardRate.toString();
   }
 }
