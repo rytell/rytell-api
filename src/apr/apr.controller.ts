@@ -53,7 +53,6 @@ export class AprController {
         WAVAX_YAY_ADDRESS[chainId],
       ),
     ]);
-
     if (poolTokenSupply.toString() === '0' || pooledYAY.toString() === '0') {
       return '0';
     }
@@ -62,7 +61,7 @@ export class AprController {
       ? (
           await this.aprService.getBalance(
             WAVAX_ADDRESS[chainId],
-            stakingTokenAddress,
+            stakingAddress,
           )
         )
           // Other side of pool has equal value
@@ -70,12 +69,7 @@ export class AprController {
           // Not all xYAY is staked
           .mul(poolTokenBalance)
           .div(poolTokenSupply)
-      : (
-          await this.aprService.getBalance(
-            YAY_ADDRESS[chainId],
-            stakingTokenAddress,
-          )
-        )
+      : (await this.aprService.getBalance(YAY_ADDRESS[chainId], stakingAddress))
           // Other side of pool has equal value
           .mul(2)
           // Convert to AVAX
