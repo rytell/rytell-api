@@ -7,7 +7,7 @@ import {
   ERC20_ABI,
   STAKING_REWARDS_ABI,
   PAIR_ABI,
-  YAY_ADDRESS,
+  PARTY_ADDRESS,
 } from '../utils/constants';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class AprService {
   }
 
   getPNGBalance(address: string) {
-    return this.getBalance(YAY_ADDRESS[this.chainId], address);
+    return this.getBalance(PARTY_ADDRESS[this.chainId], address);
   }
 
   async getTotalSupply(address: string) {

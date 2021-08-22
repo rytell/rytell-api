@@ -3,8 +3,8 @@ import { Controller, Get, Param } from '@nestjs/common';
 import {
   STAKING_ADDRESSES,
   WAVAX_ADDRESS,
-  WAVAX_YAY_ADDRESS,
-  YAY_ADDRESS,
+  WAVAX_PARTY_ADDRESS,
+  PARTY_ADDRESS,
 } from 'src/utils/constants';
 import { AprService } from './apr.service';
 
@@ -26,13 +26,13 @@ export class AprController {
       stakingAddress,
     );
 
-    // How much xYAY is staked
+    // How much xPARTY is staked
     const poolTokenBalance = await this.aprService.getBalance(
       stakingTokenAddress,
       stakingAddress,
     );
 
-    // Total xYAY supply
+    // Total xPARTY supply
     const poolTokenSupply = await this.aprService.getTotalSupply(
       stakingTokenAddress,
     );
@@ -42,18 +42,18 @@ export class AprController {
       stakingTokenAddress,
     );
 
-    // Get how much AVAX and YAY are in the AVAX-YAY pool
-    const [pooledAVAX, pooledYAY] = await Promise.all([
+    // Get how much AVAX and PARTY are in the AVAX-PARTY pool
+    const [pooledAVAX, pooledPARTY] = await Promise.all([
       await this.aprService.getBalance(
         WAVAX_ADDRESS[chainId],
-        WAVAX_YAY_ADDRESS[chainId],
+        WAVAX_PARTY_ADDRESS[chainId],
       ),
       await this.aprService.getBalance(
-        YAY_ADDRESS[chainId],
-        WAVAX_YAY_ADDRESS[chainId],
+        PARTY_ADDRESS[chainId],
+        WAVAX_PARTY_ADDRESS[chainId],
       ),
     ]);
-    if (poolTokenSupply.toString() === '0' || pooledYAY.toString() === '0') {
+    if (poolTokenSupply.toString() === '0' || pooledPARTY.toString() === '0') {
       return '0';
     }
 
@@ -66,16 +66,21 @@ export class AprController {
         )
           // Other side of pool has equal value
           .mul(2)
-          // Not all xYAY is staked
+          // Not all xPARTY is staked
           .mul(poolTokenBalance)
           .div(poolTokenSupply)
-      : (await this.aprService.getBalance(YAY_ADDRESS[chainId], stakingAddress))
+      : (
+          await this.aprService.getBalance(
+            PARTY_ADDRESS[chainId],
+            stakingAddress,
+          )
+        )
           // Other side of pool has equal value
           .mul(2)
           // Convert to AVAX
           .mul(pooledAVAX)
-          .div(pooledYAY)
-          // Not all xYAY is staked
+          .div(pooledPARTY)
+          // Not all xPARTY is staked
           .mul(poolTokenBalance)
           .div(poolTokenSupply);
 
@@ -88,7 +93,7 @@ export class AprController {
       .mul(60 * 60 * 24 * 7 * 52)
       // Convert to AVAX
       .mul(pooledAVAX)
-      .div(pooledYAY)
+      .div(pooledPARTY)
       // Percentage
       .mul(100)
       // Divide by amount staked to get APR
