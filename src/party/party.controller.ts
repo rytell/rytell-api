@@ -32,6 +32,11 @@ export class PartyController {
           TREASURY_VESTER_ADDRESS[this.chainId],
         ),
       )
+      .sub(
+        await this.partyService.getPNGBalance(
+          '0xE2fE530C047f2d85298b07D9333C05737f1435fB', // Lock account for treasury
+        ),
+      )
       .toString();
   }
 }
