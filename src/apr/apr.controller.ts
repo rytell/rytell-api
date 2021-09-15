@@ -59,7 +59,9 @@ export class AprController {
       return '0';
     }
 
-    const stakedAVAX = [token0, token1].includes(WAVAX_ADDRESS[chainId])
+    const stakedAVAX = [token0.toLowerCase(), token1.toLowerCase()].includes(
+      WAVAX_ADDRESS[chainId]?.toLowerCase(),
+    )
       ? (
           await this.aprService.getBalance(
             WAVAX_ADDRESS[chainId],
