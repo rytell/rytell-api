@@ -22,6 +22,7 @@ export class AprController {
 
     this.aprService.setChainId(chainId);
 
+    // Address of token to stake
     const stakingTokenAddress = await this.aprService.getStakingTokenAddress(
       stakingAddress,
     );
@@ -53,6 +54,7 @@ export class AprController {
         WAVAX_PARTY_ADDRESS[chainId],
       ),
     ]);
+
     if (poolTokenSupply.toString() === '0' || pooledPARTY.toString() === '0') {
       return '0';
     }
@@ -61,7 +63,7 @@ export class AprController {
       ? (
           await this.aprService.getBalance(
             WAVAX_ADDRESS[chainId],
-            stakingAddress,
+            stakingTokenAddress,
           )
         )
           // Other side of pool has equal value
@@ -72,7 +74,7 @@ export class AprController {
       : (
           await this.aprService.getBalance(
             PARTY_ADDRESS[chainId],
-            stakingAddress,
+            stakingTokenAddress,
           )
         )
           // Other side of pool has equal value
