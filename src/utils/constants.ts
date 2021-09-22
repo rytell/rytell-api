@@ -13,6 +13,11 @@ export const PARTY_ADDRESS = {
   [ChainId.AVALANCHE]: '0x69A61f38Df59CBB51962E69C54D39184E21C27Ec',
 };
 
+export const FACTORY_ADDRESS = {
+  [ChainId.FUJI]: '0x79D0b125CEA315aAB0Bb1BC2322287D3EBB88E47',
+  [ChainId.AVALANCHE]: '0x58A08bc28f3E8dab8Fb2773D8f243bC740398b09',
+};
+
 export const WAVAX_ADDRESS = {
   [ChainId.FUJI]: '0xd00ae08403B9bbb9124bB305C09058E32C39A48c',
   [ChainId.AVALANCHE]: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', //verified
@@ -122,5 +127,214 @@ export const PAIR_ABI = [
     name: 'token1',
     inputs: [],
     constant: true,
+  },
+];
+
+export const FACTORY_ABI = [
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_feeToSetter',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'token0',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'token1',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'pair',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'PairCreated',
+    type: 'event',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'INIT_CODE_PAIR_HASH',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'allPairs',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'feeTo',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'feeToSetter',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'getPair',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'allPairsLength',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'tokenA',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'tokenB',
+        type: 'address',
+      },
+    ],
+    name: 'createPair',
+    outputs: [
+      {
+        internalType: 'address',
+        name: 'pair',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_feeTo',
+        type: 'address',
+      },
+    ],
+    name: 'setFeeTo',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_feeToSetter',
+        type: 'address',
+      },
+    ],
+    name: 'setFeeToSetter',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
 ];
