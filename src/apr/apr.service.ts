@@ -8,6 +8,8 @@ import {
   STAKING_REWARDS_ABI,
   PAIR_ABI,
   PARTY_ADDRESS,
+  WAVAX_ADDRESS,
+  WAVAX_PARTY_ADDRESS,
 } from '../utils/constants';
 
 @Injectable()
@@ -68,6 +70,87 @@ export class AprService {
     } = await this.call(ERC20_ABI, erc20, 'balanceOf', [address]);
 
     return BigNumber.from(result);
+  }
+
+  async getApr(stakingAddress: string) {
+    // Address of token to stake
+    const stakingTokenAddress = await this.getStakingTokenAddress(
+      stakingAddress,
+    );
+
+    // How much xPARTY is staked
+    const poolTokenBalance = await this.getBalance(
+      stakingTokenAddress,
+      stakingAddress,
+    );
+
+    // Total xPARTY supply
+    const poolTokenSupply = await this.getTotalSupply(stakingTokenAddress);
+
+    // Get the two token addresses in the pool
+    const [token0, token1] = await this.getPoolTokens(stakingTokenAddress);
+
+    // Get how much AVAX and PARTY are in the AVAX-PARTY pool
+    const [pooledAVAX, pooledPARTY] = await Promise.all([
+      await this.getBalance(
+        WAVAX_ADDRESS[this.chainId],
+        WAVAX_PARTY_ADDRESS[this.chainId],
+      ),
+      await this.getBalance(
+        PARTY_ADDRESS[this.chainId],
+        WAVAX_PARTY_ADDRESS[this.chainId],
+      ),
+    ]);
+
+    if (poolTokenSupply.toString() === '0' || pooledPARTY.toString() === '0') {
+      return '0';
+    }
+
+    const stakedAVAX = [token0.toLowerCase(), token1.toLowerCase()].includes(
+      WAVAX_ADDRESS[this.chainId]?.toLowerCase(),
+    )
+      ? (
+          await this.getBalance(
+            WAVAX_ADDRESS[this.chainId],
+            stakingTokenAddress,
+          )
+        )
+          // Other side of pool has equal value
+          .mul(2)
+          // Not all xPARTY is staked
+          .mul(poolTokenBalance)
+          .div(poolTokenSupply)
+      : (
+          await this.getBalance(
+            PARTY_ADDRESS[this.chainId],
+            stakingTokenAddress,
+          )
+        )
+          // Other side of pool has equal value
+          .mul(2)
+          // Convert to AVAX
+          .mul(pooledAVAX)
+          .div(pooledPARTY)
+          // Not all xPARTY is staked
+          .mul(poolTokenBalance)
+          .div(poolTokenSupply);
+
+    if (stakedAVAX.toString() === '0') {
+      return stakedAVAX.toString();
+    }
+
+    return (
+      (await this.getRewardRate(stakingAddress))
+        // Reward rate is per second
+        .mul(60 * 60 * 24 * 7 * 52)
+        // Convert to AVAX
+        .mul(pooledAVAX)
+        .div(pooledPARTY)
+        // Percentage
+        .mul(100)
+        // Divide by amount staked to get APR
+        .div(stakedAVAX)
+    );
   }
 
   call(
