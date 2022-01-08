@@ -1,15 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
 import { request } from 'graphql-request';
-import { basename } from 'path';
 import { AprService } from 'src/apr/apr.service';
 import { ChainId, WAVAX_ADDRESS } from 'src/utils/constants';
 import { getPair, graphUrl } from './graphql/queries';
-import { PartySwapService } from './partyswap.service';
+import { RytellSwapService } from './rytellswap.service';
 
 @Controller('partyswap/v1')
-export class PartySwapController {
+export class RytellSwapController {
   constructor(
-    private readonly partySwapService: PartySwapService,
+    private readonly partySwapService: RytellSwapService,
     private readonly aprService: AprService,
   ) {}
 
@@ -65,7 +64,7 @@ export class PartySwapController {
 
     this.aprService.setChainId(ChainId.AVALANCHE);
     const base = {
-      provider: 'PartySwap',
+      provider: 'RytellSwap',
       provider_logo: 'https://partyswap.io/assets/img/favicon.png',
       provider_URL: 'partyswap.io',
       links: [

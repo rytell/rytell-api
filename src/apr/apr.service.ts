@@ -7,9 +7,9 @@ import {
   ERC20_ABI,
   STAKING_REWARDS_ABI,
   PAIR_ABI,
-  PARTY_ADDRESS,
+  RADI_ADDRESS,
   WAVAX_ADDRESS,
-  WAVAX_PARTY_ADDRESS,
+  WAVAX_RADI_ADDRESS,
 } from '../utils/constants';
 
 @Injectable()
@@ -41,7 +41,7 @@ export class AprService {
   }
 
   getPNGBalance(address: string) {
-    return this.getBalance(PARTY_ADDRESS[this.chainId], address);
+    return this.getBalance(RADI_ADDRESS[this.chainId], address);
   }
 
   async getTotalSupply(address: string) {
@@ -94,11 +94,11 @@ export class AprService {
     const [pooledAVAX, pooledPARTY] = await Promise.all([
       await this.getBalance(
         WAVAX_ADDRESS[this.chainId],
-        WAVAX_PARTY_ADDRESS[this.chainId],
+        WAVAX_RADI_ADDRESS[this.chainId],
       ),
       await this.getBalance(
-        PARTY_ADDRESS[this.chainId],
-        WAVAX_PARTY_ADDRESS[this.chainId],
+        RADI_ADDRESS[this.chainId],
+        WAVAX_RADI_ADDRESS[this.chainId],
       ),
     ]);
 
@@ -122,7 +122,7 @@ export class AprService {
           .div(poolTokenSupply)
       : (
           await this.getBalance(
-            PARTY_ADDRESS[this.chainId],
+            RADI_ADDRESS[this.chainId],
             stakingTokenAddress,
           )
         )

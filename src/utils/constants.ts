@@ -8,9 +8,9 @@ export const RPC_URL = {
   [ChainId.AVALANCHE]: 'https://api.avax.network/ext/bc/C/rpc',
 };
 
-export const PARTY_ADDRESS = {
-  [ChainId.FUJI]: '0xb68Dd903198339f1818Fb3710AB4Ea2Ff85231B8',
-  [ChainId.AVALANCHE]: '0x69A61f38Df59CBB51962E69C54D39184E21C27Ec',
+export const RADI_ADDRESS = {
+  [ChainId.FUJI]: '0xCcA36c23E977d6c2382dF43e930BC8dE9daC897E',
+  [ChainId.AVALANCHE]: '',
 };
 
 export const FACTORY_ADDRESS = {
@@ -28,7 +28,7 @@ export const WAVAX_ADDRESS = {
   [ChainId.AVALANCHE]: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', //verified
 };
 
-export const WAVAX_PARTY_ADDRESS = {
+export const WAVAX_RADI_ADDRESS = {
   [ChainId.FUJI]: '0x4D2eF43d714308313F15660f91Ab4E4690a12D06',
   [ChainId.AVALANCHE]: '0xcD5043292d99D63f42f0447d77E5cA048506Bad6',
 }; //at fuji

@@ -7,11 +7,11 @@ import {
   ERC20_ABI,
   STAKING_REWARDS_ABI,
   PAIR_ABI,
-  PARTY_ADDRESS,
+  RADI_ADDRESS,
 } from '../utils/constants';
 
 @Injectable()
-export class PartyService {
+export class RadiService {
   constructor(private httpService: HttpService) {}
   private chainId: number;
 
@@ -39,7 +39,7 @@ export class PartyService {
   }
 
   getPNGBalance(address: string) {
-    return this.getBalance(PARTY_ADDRESS[this.chainId], address);
+    return this.getBalance(RADI_ADDRESS[this.chainId], address);
   }
 
   async getTotalSupply(address: string) {

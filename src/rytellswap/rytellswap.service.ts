@@ -10,15 +10,15 @@ import {
   LIQUIDITY_POOL_MANAGER_ABI,
   LIQUIDITY_POOL_MANAGER_ADDRESS,
   PAIR_ABI,
-  PARTY_ADDRESS,
+  RADI_ADDRESS,
   RPC_URL,
   STAKING_REWARDS_ABI,
   WAVAX_ADDRESS,
-  WAVAX_PARTY_ADDRESS,
+  WAVAX_RADI_ADDRESS,
 } from 'src/utils/constants';
 
 @Injectable()
-export class PartySwapService {
+export class RytellSwapService {
   constructor(private httpService: HttpService) {}
 
   async getPairAddresses() {
@@ -115,16 +115,16 @@ export class PartySwapService {
       ERC20_ABI,
       WAVAX_ADDRESS[ChainId.AVALANCHE],
       'balanceOf',
-      [WAVAX_PARTY_ADDRESS[ChainId.AVALANCHE]],
+      [WAVAX_RADI_ADDRESS[ChainId.AVALANCHE]],
     );
 
     const {
       data: { result: partyReserve },
     } = await this.call(
       ERC20_ABI,
-      PARTY_ADDRESS[ChainId.AVALANCHE],
+      RADI_ADDRESS[ChainId.AVALANCHE],
       'balanceOf',
-      [WAVAX_PARTY_ADDRESS[ChainId.AVALANCHE]],
+      [WAVAX_RADI_ADDRESS[ChainId.AVALANCHE]],
     );
 
     const bWavaxReserve = BigNumber.from(wavaxReserve);
