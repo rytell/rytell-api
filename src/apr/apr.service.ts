@@ -2,15 +2,17 @@ import { HttpService, Injectable } from '@nestjs/common';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Interface } from '@ethersproject/abi';
 import { hexStripZeros, hexZeroPad } from '@ethersproject/bytes';
+import { abi as STAKING_REWARDS_ABI } from '@rytell/liquidity-pools/artifacts/contracts/StakingRewards.sol/StakingRewards.json';
+import { abi as PAIR_ABI } from '@rytell/exchange-contracts/artifacts/contracts/core/RytellPair.sol/RytellPair.json';
 import {
   RPC_URL,
   ERC20_ABI,
   RADI_ADDRESS,
   WAVAX_ADDRESS,
   WAVAX_RADI_ADDRESS,
+  STABLE_ADDRESS,
+  WAVAX_STABLE_ADDRESS,
 } from '../utils/constants';
-import { abi as STAKING_REWARDS_ABI } from '@rytell/liquidity-pools/artifacts/contracts/StakingRewards.sol/StakingRewards.json';
-import { abi as PAIR_ABI } from '@rytell/exchange-contracts/artifacts/contracts/core/RytellPair.sol/RytellPair.json';
 
 @Injectable()
 export class AprService {
@@ -73,74 +75,112 @@ export class AprService {
   }
 
   async getApr(stakingAddress: string) {
+    // these addresses are not consistant at fuji between v2 piñatas and boosted
+    const [wavax_radi_pair, radi_address] = [
+      WAVAX_RADI_ADDRESS,
+      RADI_ADDRESS,
+    ];
+
     // Address of token to stake
     const stakingTokenAddress = await this.getStakingTokenAddress(
       stakingAddress,
     );
 
-    // How much xPARTY is staked
-    const poolTokenBalance = await this.getBalance(
-      stakingTokenAddress,
-      stakingAddress,
-    );
-
-    // Total xPARTY supply
-    const poolTokenSupply = await this.getTotalSupply(stakingTokenAddress);
-
-    // Get the two token addresses in the pool
-    const [token0, token1] = await this.getPoolTokens(stakingTokenAddress);
-
-    // Get how much AVAX and PARTY are in the AVAX-PARTY pool
-    const [pooledAVAX, pooledPARTY] = await Promise.all([
-      await this.getBalance(
+    const [
+      poolTokenBalance,
+      poolTokenSupply,
+      [token0, token1],
+      pooledAVAX,
+      pooledRADI,
+      pooledAVAXForSTABLE,
+      pooledSTABLE,
+      rewardRate,
+    ] = await Promise.all([
+      this.getBalance(stakingTokenAddress, stakingAddress),
+      this.getTotalSupply(stakingTokenAddress),
+      this.getPoolTokens(stakingTokenAddress),
+      this.getBalance(
         WAVAX_ADDRESS[this.chainId],
-        WAVAX_RADI_ADDRESS[this.chainId],
+        wavax_radi_pair[this.chainId],
       ),
-      await this.getBalance(
-        RADI_ADDRESS[this.chainId],
-        WAVAX_RADI_ADDRESS[this.chainId],
+      this.getBalance(
+        radi_address[this.chainId],
+        wavax_radi_pair[this.chainId],
       ),
+      this.getBalance(
+        WAVAX_ADDRESS[this.chainId],
+        WAVAX_STABLE_ADDRESS[this.chainId],
+      ),
+      this.getBalance(
+        STABLE_ADDRESS[this.chainId],
+        WAVAX_STABLE_ADDRESS[this.chainId],
+      ),
+      this.getRewardRate(stakingAddress),
     ]);
 
-    if (poolTokenSupply.toString() === '0' || pooledPARTY.toString() === '0') {
+    if (poolTokenSupply.toString() === '0' || pooledRADI.toString() === '0') {
       return '0';
     }
 
-    const stakedAVAX = [token0.toLowerCase(), token1.toLowerCase()].includes(
+    let stakedAVAX: BigNumber;
+    const avaxPool = [token0.toLowerCase(), token1.toLowerCase()].includes(
       WAVAX_ADDRESS[this.chainId]?.toLowerCase(),
-    )
-      ? (
-          await this.getBalance(
-            WAVAX_ADDRESS[this.chainId],
-            stakingTokenAddress,
-          )
-        )
-          // Other side of pool has equal value
-          .mul(2)
-          // Not all xPARTY is staked
-          .mul(poolTokenBalance)
-          .div(poolTokenSupply)
-      : (await this.getBalance(RADI_ADDRESS[this.chainId], stakingTokenAddress))
-          // Other side of pool has equal value
-          .mul(2)
-          // Convert to AVAX
-          .mul(pooledAVAX)
-          .div(pooledPARTY)
-          // Not all xPARTY is staked
-          .mul(poolTokenBalance)
-          .div(poolTokenSupply);
+    );
+    const radiPool = [token0.toLowerCase(), token1.toLowerCase()].includes(
+      radi_address[this.chainId]?.toLowerCase(),
+    );
+    const stablePool = [token0.toLowerCase(), token1.toLowerCase()].includes(
+      STABLE_ADDRESS[this.chainId]?.toLowerCase(),
+    );
+    if (avaxPool) {
+      //WAVAX AS BASE CASE
+      stakedAVAX = (
+        await this.getBalance(WAVAX_ADDRESS[this.chainId], stakingTokenAddress)
+      )
+        // Other side of pool has equal value
+        .mul(2)
+        // Not all xRADI is staked
+        .mul(poolTokenBalance)
+        .div(poolTokenSupply);
+    } else if (radiPool) {
+      //RADI AS BASE CASE
+      stakedAVAX = (
+        await this.getBalance(radi_address[this.chainId], stakingTokenAddress)
+      )
+        // Other side of pool has equal value
+        .mul(2)
+        // Convert to AVAX
+        .mul(pooledAVAX)
+        .div(pooledRADI)
+        // Not all xRADI is staked
+        .mul(poolTokenBalance)
+        .div(poolTokenSupply);
+    } else if (stablePool) {
+      //STABLE COIN AS BASE CASE
+      stakedAVAX = (
+        await this.getBalance(STABLE_ADDRESS[this.chainId], stakingTokenAddress)
+      )
+        // Other side of pool has equal value
+        .mul(2)
+        // Convert to AVAX
+        .mul(pooledAVAXForSTABLE)
+        .div(pooledSTABLE)
+        // Not all xRADI is staked
+        .mul(poolTokenBalance)
+        .div(poolTokenSupply);
+    }
 
     if (stakedAVAX.toString() === '0') {
       return stakedAVAX.toString();
     }
 
     return (
-      (await this.getRewardRate(stakingAddress))
+      rewardRate
         // Reward rate is per second
         .mul(60 * 60 * 24 * 7 * 52)
         // Convert to AVAX
         .mul(pooledAVAX)
-        .div(pooledPARTY)
+        .div(pooledRADI)
         // Percentage
         .mul(100)
         // Divide by amount staked to get APR
