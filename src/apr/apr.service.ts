@@ -5,12 +5,12 @@ import { hexStripZeros, hexZeroPad } from '@ethersproject/bytes';
 import {
   RPC_URL,
   ERC20_ABI,
-  STAKING_REWARDS_ABI,
-  PAIR_ABI,
   RADI_ADDRESS,
   WAVAX_ADDRESS,
   WAVAX_RADI_ADDRESS,
 } from '../utils/constants';
+import { abi as STAKING_REWARDS_ABI } from '@rytell/liquidity-pools/artifacts/contracts/StakingRewards.sol/StakingRewards.json';
+import { abi as PAIR_ABI } from '@rytell/exchange-contracts/artifacts/contracts/core/RytellPair.sol/RytellPair.json';
 
 @Injectable()
 export class AprService {
@@ -120,12 +120,7 @@ export class AprService {
           // Not all xPARTY is staked
           .mul(poolTokenBalance)
           .div(poolTokenSupply)
-      : (
-          await this.getBalance(
-            RADI_ADDRESS[this.chainId],
-            stakingTokenAddress,
-          )
-        )
+      : (await this.getBalance(RADI_ADDRESS[this.chainId], stakingTokenAddress))
           // Other side of pool has equal value
           .mul(2)
           // Convert to AVAX

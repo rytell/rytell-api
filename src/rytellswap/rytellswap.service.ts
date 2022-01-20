@@ -1,18 +1,16 @@
 import { Interface } from '@ethersproject/abi';
 import { BigNumber } from '@ethersproject/bignumber';
 import { HttpService, Injectable } from '@nestjs/common';
-import { AprService } from 'src/apr/apr.service';
+import { abi as FACTORY_ABI } from '@rytell/exchange-contracts/artifacts/contracts/core/RytellFactory.sol/RytellFactory.json';
+import { abi as PAIR_ABI } from '@rytell/exchange-contracts/artifacts/contracts/core/RytellPair.sol/RytellPair.json';
+import { abi as LIQUIDITY_POOL_MANAGER_ABI } from '@rytell/liquidity-pools/artifacts/contracts/LiquidityPoolManager.sol/LiquidityPoolManager.json';
 import {
   ChainId,
   ERC20_ABI,
-  FACTORY_ABI,
   FACTORY_ADDRESS,
-  LIQUIDITY_POOL_MANAGER_ABI,
   LIQUIDITY_POOL_MANAGER_ADDRESS,
-  PAIR_ABI,
   RADI_ADDRESS,
   RPC_URL,
-  STAKING_REWARDS_ABI,
   WAVAX_ADDRESS,
   WAVAX_RADI_ADDRESS,
 } from 'src/utils/constants';

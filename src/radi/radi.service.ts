@@ -2,14 +2,9 @@ import { HttpService, Injectable } from '@nestjs/common';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Interface } from '@ethersproject/abi';
 import { hexStripZeros, hexZeroPad } from '@ethersproject/bytes';
-import {
-  RPC_URL,
-  ERC20_ABI,
-  STAKING_REWARDS_ABI,
-  PAIR_ABI,
-  RADI_ADDRESS,
-} from '../utils/constants';
-
+import { RPC_URL, ERC20_ABI, RADI_ADDRESS } from '../utils/constants';
+import { abi as STAKING_REWARDS_ABI } from '@rytell/liquidity-pools/artifacts/contracts/StakingRewards.sol/StakingRewards.json';
+import { abi as PAIR_ABI } from '@rytell/exchange-contracts/artifacts/contracts/core/RytellPair.sol/RytellPair.json';
 @Injectable()
 export class RadiService {
   constructor(private httpService: HttpService) {}
