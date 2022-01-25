@@ -76,10 +76,7 @@ export class AprService {
 
   async getApr(stakingAddress: string) {
     // these addresses are not consistant at fuji between v2 piñatas and boosted
-    const [wavax_radi_pair, radi_address] = [
-      WAVAX_RADI_ADDRESS,
-      RADI_ADDRESS,
-    ];
+    const [wavax_radi_pair, radi_address] = [WAVAX_RADI_ADDRESS, RADI_ADDRESS];
 
     // Address of token to stake
     const stakingTokenAddress = await this.getStakingTokenAddress(
