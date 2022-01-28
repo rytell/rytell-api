@@ -5,7 +5,7 @@ import { ChainId, WAVAX_ADDRESS } from 'src/utils/constants';
 import { getPair, graphUrl } from './graphql/queries';
 import { RytellSwapService } from './rytellswap.service';
 
-@Controller('partyswap/v1')
+@Controller('rytell/v1')
 export class RytellSwapController {
   constructor(
     private readonly partySwapService: RytellSwapService,
@@ -65,8 +65,8 @@ export class RytellSwapController {
     this.aprService.setChainId(ChainId.AVALANCHE);
     const base = {
       provider: 'RytellSwap',
-      provider_logo: 'https://partyswap.io/assets/img/favicon.png',
-      provider_URL: 'partyswap.io',
+      provider_logo: 'https://rytell.io/assets/img/favicon.png',
+      provider_URL: 'rytell.io',
       links: [
         {
           title: 'Discord',
@@ -74,15 +74,7 @@ export class RytellSwapController {
         },
         {
           title: 'Twitter',
-          link: 'https://twitter.com/partyswapdex',
-        },
-        {
-          title: 'Telegram',
-          link: 'https://t.me/partyswap',
-        },
-        {
-          title: 'Medium',
-          link: 'https://partyswap-ex.medium.com/',
+          link: 'https://twitter.com/playrytell',
         },
       ],
     };
@@ -94,7 +86,7 @@ export class RytellSwapController {
       token0: string;
       token1: string;
     }) => {
-      const baseurl = 'https://app.partyswap.io/#/party/';
+      const baseurl = 'https://rytell.io/#/party/';
       let basetoken, quote, version;
       version = 1;
 
