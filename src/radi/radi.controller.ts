@@ -28,12 +28,12 @@ export class RadiController {
     return (
       totalSupply
         // .sub(
-        //   await this.radiService.getPNGBalance(
+        //   await this.radiService.getRADIBalance(
         //     TREASURY_VESTER_ADDRESS[this.chainId],
         //   ),
         // )
         // .sub(
-        //   await this.radiService.getPNGBalance(
+        //   await this.radiService.getRADIBalance(
         //     '0xE2fE530C047f2d85298b07D9333C05737f1435fB', // Lock account for treasury
         //   ),
         // )

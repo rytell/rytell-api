@@ -42,7 +42,7 @@ export class AprService {
     return BigNumber.from(result);
   }
 
-  getPNGBalance(address: string) {
+  getRADIBalance(address: string) {
     return this.getBalance(RADI_ADDRESS[this.chainId], address);
   }
 
