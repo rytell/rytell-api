@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { RADI_ADDRESS } from 'src/utils/constants';
+import { RADI_ADDRESS, RADI_EMITTER } from 'src/utils/constants';
 
 import { RadiService } from './radi.service';
 
@@ -8,7 +8,7 @@ import { RadiService } from './radi.service';
 export class RadiController {
   constructor(private readonly radiService: RadiService) {}
 
-  chainId = 43113;
+  chainId = 43114;
 
   @Get('totalSupply')
   async getTotalSupply(): Promise<string> {
@@ -25,19 +25,8 @@ export class RadiController {
     const totalSupply = await this.radiService.getTotalSupply(
       RADI_ADDRESS[this.chainId],
     );
-    return (
-      totalSupply
-        // .sub(
-        //   await this.radiService.getRADIBalance(
-        //     TREASURY_VESTER_ADDRESS[this.chainId],
-        //   ),
-        // )
-        // .sub(
-        //   await this.radiService.getRADIBalance(
-        //     '0xE2fE530C047f2d85298b07D9333C05737f1435fB', // Lock account for treasury
-        //   ),
-        // )
-        .toString()
-    );
+    return totalSupply
+      .sub(await this.radiService.getRADIBalance(RADI_EMITTER[this.chainId]))
+      .toString();
   }
 }
