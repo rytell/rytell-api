@@ -48,6 +48,21 @@ export const TREASURY_VESTER_ADDRESS = {
   [ChainId.AVALANCHE]: '0x71FDf7e9be82896BeCddd3485ECEb41A69509A16',
 };
 
+export const TREASURY_FUND = {
+  [ChainId.FUJI]: '0x6b1c1dd687ebd67f19db5bcfba993cddbc6ae997',
+  [ChainId.AVALANCHE]: '0x6b1c1dd687ebd67f19db5bcfba993cddbc6ae997',
+};
+
+export const POTENTIAL_STRATEGIC_INVESTORS_FUND = {
+  [ChainId.FUJI]: '0x39ce999b9f864cde0c092931e4a0b7226ea141f9',
+  [ChainId.AVALANCHE]: '0x39ce999b9f864cde0c092931e4a0b7226ea141f9',
+};
+
+export const GAME_EMISSIONS_FUND = {
+  [ChainId.FUJI]: '0x3059bbb4a86a502b7c2a838a4a87baf680887c04',
+  [ChainId.AVALANCHE]: '0x3059bbb4a86a502b7c2a838a4a87baf680887c04',
+};
+
 export const RADI_EMITTER = {
   [ChainId.FUJI]: '0x16a449Da4B5d699aa0A8D080dE5EDa1e52Aac716',
   [ChainId.AVALANCHE]: '0xCb9d98E8E1efA7dfCD54C1C337529b9d198af81C',

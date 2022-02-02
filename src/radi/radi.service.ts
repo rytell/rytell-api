@@ -70,7 +70,7 @@ export class RadiService {
     toAddress: string,
     functionName: string,
     functionData: any[],
-  ) {
+  ): any {
     const iface = new Interface(abi);
 
     return this.httpService

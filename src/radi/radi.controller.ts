@@ -1,6 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { RADI_ADDRESS, RADI_EMITTER } from 'src/utils/constants';
+import {
+  GAME_EMISSIONS_FUND,
+  POTENTIAL_STRATEGIC_INVESTORS_FUND,
+  RADI_ADDRESS,
+  RADI_EMITTER,
+  TREASURY_FUND,
+} from 'src/utils/constants';
 
 import { RadiService } from './radi.service';
 
@@ -27,6 +33,17 @@ export class RadiController {
     );
     return totalSupply
       .sub(await this.radiService.getRADIBalance(RADI_EMITTER[this.chainId]))
+      .sub(
+        await this.radiService.getRADIBalance(
+          GAME_EMISSIONS_FUND[this.chainId],
+        ),
+      )
+      .sub(await this.radiService.getRADIBalance(TREASURY_FUND[this.chainId]))
+      .sub(
+        await this.radiService.getRADIBalance(
+          POTENTIAL_STRATEGIC_INVESTORS_FUND[this.chainId],
+        ),
+      )
       .toString();
   }
 }
