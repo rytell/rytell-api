@@ -28,5 +28,15 @@ export const getPair = gql`
   }
 `;
 
+export const getDailyVolume = gql`
+{
+  rytellDayDatas(orderBy: date, orderDirection: desc, first:30) {
+    date
+    dailyVolumeUSD
+    dailyVolumeETH
+  }
+}
+`
+
 export const graphUrl =
-  'https://api.thegraph.com/subgraphs/name/josema03/partyswap-dex';
+  'https://api.thegraph.com/subgraphs/name/pedroomedicina/rytellfuji';
