@@ -16,13 +16,13 @@ export class AppService {
     })
 
     const dailyAvg = totalVolume / rytellDayDatas.length;
-    const totalAnnualEstimate = dailyAvg * 365
-    const annualProjection = totalAnnualEstimate * 0.03
+    const totalVolumeAnnualEstimate = dailyAvg * 365
+    const annualProjection = totalVolumeAnnualEstimate * 0.0003
 
     const response = {
       volumeLast30Days: totalVolume,
       dailyAvg,
-      totalAnnualEstimate,
+      totalVolumeAnnualEstimate,
       annualProjection
     }
     return response

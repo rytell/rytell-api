@@ -10,7 +10,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('volume/annualProjection')
+  @Get('volume/annual-projection')
   async annualProjection(): Promise<any> {
     return await this.appService.getAnnualProjection()
   }
