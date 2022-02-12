@@ -29,14 +29,29 @@ export const getPair = gql`
 `;
 
 export const getDailyVolume = gql`
-{
-  rytellDayDatas(orderBy: date, orderDirection: desc, first:30) {
-    date
-    dailyVolumeUSD
-    dailyVolumeETH
+  {
+    rytellDayDatas(orderBy: date, orderDirection: desc, first: 30) {
+      date
+      dailyVolumeUSD
+      dailyVolumeETH
+    }
   }
-}
-`
+`;
+
+export const getPairPrices = gql`
+  query pair($pair: String) {
+    pair(id: $pair) {
+      token1 {
+        symbol
+      }
+      token0 {
+        symbol
+      }
+      token1Price
+      token0Price
+    }
+  }
+`;
 
 export const graphUrl =
   'https://api.thegraph.com/subgraphs/name/pedroomedicina/rytellfuji';
