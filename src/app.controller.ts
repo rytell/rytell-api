@@ -11,7 +11,7 @@ export class AppController {
   }
 
   @Get('volume/annual-projection')
-  async annualProjection(): Promise<any> {
+  async annualProjection(): Promise<string> {
     return await this.appService.getAnnualProjection();
   }
 }

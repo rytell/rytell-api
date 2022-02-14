@@ -12,7 +12,7 @@ export class AppService {
     return 'Welcome to Rytell API';
   }
 
-  async getAnnualProjection(): Promise<any> {
+  async getAnnualProjection(): Promise<string> {
     const { rytellDayDatas } = await request(graphUrl, getDailyVolume);
     const { pair: radiWavax } = await request(graphUrl, getPairPrices, {
       pair: '0xaa4f1adb2bf0665ab24eb742cbefe1a13658d913',
@@ -41,6 +41,6 @@ export class AppService {
       annualProjection,
       annualProjectionRadi,
     };
-    return response;
+    return annualProjectionRadi.toString();
   }
 }
