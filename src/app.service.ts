@@ -34,13 +34,13 @@ export class AppService {
     const annualProjection = totalVolumeAnnualEstimate * 0.0003;
     const annualProjectionRadi = usdToRadi(annualProjection);
 
-    const response = {
-      volumeLast30Days: totalVolume,
-      dailyAvg,
-      totalVolumeAnnualEstimate,
-      annualProjection,
-      annualProjectionRadi,
-    };
+    // const response = {
+    //   volumeLast30Days: totalVolume,
+    //   dailyAvg,
+    //   totalVolumeAnnualEstimate,
+    //   annualProjection,
+    //   annualProjectionRadi,
+    // };
     return annualProjectionRadi.toString();
   }
 }
