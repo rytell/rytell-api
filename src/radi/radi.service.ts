@@ -5,6 +5,11 @@ import { hexStripZeros, hexZeroPad } from '@ethersproject/bytes';
 import { RPC_URL, ERC20_ABI, RADI_ADDRESS } from '../utils/constants';
 import { abi as STAKING_REWARDS_ABI } from '@rytell/liquidity-pools/artifacts/contracts/StakingRewards.sol/StakingRewards.json';
 import { abi as PAIR_ABI } from '@rytell/exchange-contracts/artifacts/contracts/core/RytellPair.sol/RytellPair.json';
+import { request } from 'graphql-request';
+import {
+  getPairPrices,
+  graphUrl,
+} from '../rytellswap/graphql/queries';
 @Injectable()
 export class RadiService {
   constructor(private httpService: HttpService) {}
@@ -63,6 +68,16 @@ export class RadiService {
     } = await this.call(ERC20_ABI, erc20, 'balanceOf', [address]);
 
     return BigNumber.from(result);
+  }
+
+  async getUsdcValue(quantity: number){
+    const { pair: radiWavax } = await request(graphUrl, getPairPrices, {
+      pair: '0xaa4f1adb2bf0665ab24eb742cbefe1a13658d913',
+    });
+    const { pair: usdcWavax } = await request(graphUrl, getPairPrices, {
+      pair: '0xe8440c62c6c01e7c47cbedfca80ab26be0af79db',
+    });
+    return quantity * radiWavax.token1Price * usdcWavax.token0Price;
   }
 
   call(

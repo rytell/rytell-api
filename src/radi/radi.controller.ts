@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 
 import {
   GAME_EMISSIONS_FUND,
@@ -45,5 +45,11 @@ export class RadiController {
         ),
       )
       .toString();
+  }
+
+  @Get('to-usdc/:quantity')
+  async annualProjection(@Param() params): Promise<string> {
+    const { quantity } = params;
+    return (await this.radiService.getUsdcValue(quantity)).toString()
   }
 }
